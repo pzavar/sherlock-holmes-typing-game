@@ -33,6 +33,7 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
   const [elapsedTime, setElapsedTime] = useState(0);
   
   const textContainerRef = useRef<HTMLDivElement>(null);
+  const currentLetterRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<number | null>(null);
 
   // Listen for keyboard input
@@ -116,15 +117,12 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
   
   // Scroll text into view as user types
   useEffect(() => {
-    if (textContainerRef.current) {
-      const elements = textContainerRef.current.querySelectorAll('span');
-      if (elements[currentIndex]) {
-        elements[currentIndex].scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center'
-        });
-      }
+    if (currentLetterRef.current) {
+      currentLetterRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center'
+      });
     }
   }, [currentIndex]);
   
@@ -210,14 +208,21 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
       >
         <div 
           ref={textContainerRef}
-          className="typing-text relative min-h-36 mb-4 overflow-hidden"
+          className="typing-text relative min-h-36 mb-4 overflow-hidden leading-relaxed"
         >
           {challenge.text.split('').map((char, index) => {
             const status = getLetterStatus(index);
             return (
               <span 
                 key={index} 
-                className={`letter-${status}`}
+                ref={status === 'current' ? currentLetterRef : null}
+                className={cn(
+                  "letter-base",
+                  status === 'current' && "letter-current",
+                  status === 'correct' && "letter-correct",
+                  status === 'incorrect' && "letter-incorrect",
+                  status === 'pending' && "letter-pending",
+                )}
               >
                 {char}
                 {status === 'current' && (

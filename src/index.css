@@ -65,15 +65,29 @@
 
   .typing-text {
     @apply font-mono text-lg leading-relaxed tracking-wide;
+    line-height: 2; /* More spacing between lines */
   }
 
   .cursor-blink {
     @apply animate-blink bg-typing-cursor;
+    height: 1.4em; /* Taller cursor */
+    opacity: 0.8;
+  }
+
+  .letter-base {
+    @apply transition-all duration-100;
+    position: relative;
+    margin: 0 0.02em; /* Subtle letter spacing */
   }
 
   .letter-current {
     @apply text-typing-current font-semibold relative;
-    text-shadow: 0 0 1px theme('colors.typing.current');
+    text-shadow: 0 0 8px rgba(0, 119, 255, 0.3); /* Soft glow effect */
+    transform: scale(1.1); /* Slightly larger */
+    background-color: rgba(0, 119, 255, 0.1); /* Subtle background */
+    border-radius: 2px;
+    padding: 0 2px;
+    margin: 0;
   }
 
   .letter-correct {
@@ -101,3 +115,4 @@
     animate-pop;
   }
 }
+

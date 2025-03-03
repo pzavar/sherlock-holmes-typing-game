@@ -34,37 +34,37 @@ export const formatTime = (ms: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
-// Sample typing challenges
+// Sherlock Holmes typing challenges
 export const typingChallenges: Challenge[] = [
   {
-    id: "quick-test",
-    title: "Quick Test",
-    description: "A short test to measure your typing speed",
-    text: "The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump!",
+    id: "holmes-intro",
+    title: "A Study in Scarlet",
+    description: "Introduction to Sherlock Holmes",
+    text: "In the year 1878 I took my degree of Doctor of Medicine of the University of London, and proceeded to Netley to go through the course prescribed for surgeons in the army. Having completed my studies there, I was duly attached to the Fifth Northumberland Fusiliers as Assistant Surgeon.",
     difficulty: "easy",
     estimatedTime: "30 sec"
   },
   {
-    id: "programming",
-    title: "Programming Snippet",
-    description: "Practice typing code-like text",
-    text: "function calculateResult(a, b) {\n  const sum = a + b;\n  return sum > 10 ? 'Large' : 'Small';\n}\n\nconst result = calculateResult(5, 7);\nconsole.log(`The result is ${result}`);",
+    id: "holmes-observation",
+    title: "The Science of Deduction",
+    description: "Holmes explains his methods",
+    text: "From a drop of water a logician could infer the possibility of an Atlantic or a Niagara without having seen or heard of one or the other. So all life is a great chain, the nature of which is known whenever we are shown a single link of it.",
     difficulty: "medium",
     estimatedTime: "1 min"
   },
   {
-    id: "paragraph",
-    title: "Full Paragraph",
-    description: "A longer text to test your endurance",
-    text: "Design is not just what it looks like and feels like. Design is how it works. Simple can be harder than complex: You have to work hard to get your thinking clean to make it simple. But it's worth it in the end because once you get there, you can move mountains. The people who are crazy enough to think they can change the world are the ones who do.",
+    id: "holmes-baskerville",
+    title: "The Hound of the Baskervilles",
+    description: "The famous supernatural case",
+    text: "Mr. Sherlock Holmes, who was usually very late in the mornings, save upon those not infrequent occasions when he was up all night, was seated at the breakfast table. I stood upon the hearth-rug and picked up the stick which our visitor had left behind him the night before. It was a fine, thick piece of wood, bulbous-headed, of the sort which is known as a 'Penang lawyer.'",
     difficulty: "medium",
     estimatedTime: "2 min"
   },
   {
-    id: "lorem-ipsum",
-    title: "Lorem Ipsum",
-    description: "Classic placeholder text for extensive practice",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    id: "holmes-final-problem",
+    title: "The Final Problem",
+    description: "Holmes faces his nemesis Professor Moriarty",
+    text: "It is with a heavy heart that I take up my pen to write these the last words in which I shall ever record the singular gifts by which my friend Mr. Sherlock Holmes was distinguished. In an incoherent and, as I deeply feel, an entirely inadequate fashion, I have endeavored to give some account of my strange experiences in his company from the chance which first brought us together at the period of the 'Study in Scarlet,' up to the time of his interference in the matter of the 'Naval Treaty.'",
     difficulty: "hard",
     estimatedTime: "3 min"
   }

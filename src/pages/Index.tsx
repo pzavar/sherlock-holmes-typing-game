@@ -6,7 +6,7 @@ import TypingInterface from '@/components/TypingInterface';
 import { typingChallenges } from '@/utils/textUtils';
 import { Challenge, TypingStats } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Scroll, CheckCircle } from 'lucide-react';
+import { Scroll, CheckCircle, Search, BookOpen, Glasses, MapPin } from 'lucide-react';
 
 const Index = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
@@ -27,10 +27,24 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-[#F6F6F7] bg-[url('/paper-texture.png')] bg-repeat">
+    <div className="min-h-screen flex flex-col bg-[#F6F6F7] bg-[url('/paper-texture.png')] bg-repeat relative">
+      {/* Decorative Elements */}
+      <div className="absolute top-[10%] left-[5%] opacity-10 transform -rotate-12">
+        <Search className="h-32 w-32 text-amber-800" strokeWidth={1} />
+      </div>
+      <div className="absolute bottom-[15%] right-[8%] opacity-10 transform rotate-12">
+        <MapPin className="h-24 w-24 text-amber-800" strokeWidth={1} />
+      </div>
+      <div className="absolute top-[20%] right-[10%] opacity-10 transform rotate-6">
+        <Glasses className="h-20 w-20 text-amber-800" strokeWidth={1} />
+      </div>
+      <div className="absolute bottom-[25%] left-[7%] opacity-10 transform -rotate-6">
+        <BookOpen className="h-28 w-28 text-amber-800" strokeWidth={1} />
+      </div>
+      
       <Header />
       
-      <main className="flex-1 container max-w-4xl mx-auto px-4 py-8">
+      <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 relative z-10">
         {!selectedChallenge ? (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-md border border-amber-200">
             <div className="mb-6 text-center">

@@ -6,6 +6,7 @@ import TypingInterface from '@/components/TypingInterface';
 import { typingChallenges } from '@/utils/textUtils';
 import { Challenge, TypingStats } from '@/types';
 import { Button } from '@/components/ui/button';
+import { Scroll, CheckCircle } from 'lucide-react';
 
 const Index = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
@@ -26,71 +27,85 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-[#F6F6F7] bg-[url('/paper-texture.png')] bg-repeat">
       <Header />
       
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-8">
         {!selectedChallenge ? (
-          <ChallengeSelector 
-            challenges={typingChallenges} 
-            onSelect={handleChallengeSelect} 
-          />
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-md border border-amber-200">
+            <div className="mb-6 text-center">
+              <h2 className="text-3xl font-serif font-bold text-[#403E43] mb-2">The Case Files</h2>
+              <p className="text-[#8A898C] italic">Select a document to transcribe from Sherlock's archives</p>
+            </div>
+            <ChallengeSelector 
+              challenges={typingChallenges} 
+              onSelect={handleChallengeSelect} 
+            />
+          </div>
         ) : !completedStats ? (
-          <TypingInterface 
-            challenge={selectedChallenge}
-            onComplete={handleChallengeComplete}
-            onReset={handleReset}
-            className="animate-fade-in"
-          />
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-md border border-amber-200">
+            <TypingInterface 
+              challenge={selectedChallenge}
+              onComplete={handleChallengeComplete}
+              onReset={handleReset}
+              className="animate-fade-in"
+            />
+          </div>
         ) : (
           <div className="w-full flex flex-col items-center animate-fade-in">
-            <div className="results-card w-full max-w-xl mb-8">
-              <h2 className="text-2xl font-medium mb-6 text-center">
-                Challenge Complete!
-              </h2>
+            <div className="results-card w-full max-w-xl mb-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-md border border-amber-200">
+              <div className="flex items-center justify-center mb-6">
+                <CheckCircle className="h-10 w-10 text-amber-600 mr-3" />
+                <h2 className="text-2xl font-serif font-bold text-[#403E43]">
+                  Case Closed!
+                </h2>
+              </div>
               
               <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="text-center">
-                  <p className="text-muted-foreground text-sm mb-1">Typing Speed</p>
-                  <p className="text-4xl font-medium">{completedStats.wpm} <span className="text-sm font-normal text-muted-foreground">WPM</span></p>
+                <div className="text-center bg-[#221F26] text-white rounded-lg p-4">
+                  <p className="text-amber-300 text-sm mb-1">Deduction Speed</p>
+                  <p className="text-4xl font-medium">{completedStats.wpm} <span className="text-sm font-normal text-amber-200">WPM</span></p>
                 </div>
                 
-                <div className="text-center">
-                  <p className="text-muted-foreground text-sm mb-1">Accuracy</p>
+                <div className="text-center bg-[#221F26] text-white rounded-lg p-4">
+                  <p className="text-amber-300 text-sm mb-1">Accuracy</p>
                   <p className="text-4xl font-medium">{completedStats.accuracy}%</p>
                 </div>
                 
-                <div className="text-center">
-                  <p className="text-muted-foreground text-sm mb-1">Correct Characters</p>
-                  <p className="text-2xl font-medium text-typing-correct">{completedStats.correctChars}</p>
+                <div className="text-center border border-green-200 bg-green-50 rounded-lg p-4">
+                  <p className="text-green-700 text-sm mb-1">Evidence Collected</p>
+                  <p className="text-2xl font-medium text-green-600">{completedStats.correctChars}</p>
                 </div>
                 
-                <div className="text-center">
-                  <p className="text-muted-foreground text-sm mb-1">Incorrect Characters</p>
-                  <p className="text-2xl font-medium text-typing-incorrect">{completedStats.incorrectChars}</p>
+                <div className="text-center border border-red-200 bg-red-50 rounded-lg p-4">
+                  <p className="text-red-700 text-sm mb-1">Mistakes Made</p>
+                  <p className="text-2xl font-medium text-red-600">{completedStats.incorrectChars}</p>
                 </div>
               </div>
               
               <div className="flex justify-center space-x-4">
                 <Button
                   variant="outline"
+                  className="border-amber-600 text-amber-800 hover:bg-amber-50"
                   onClick={() => {
                     setCompletedStats(null);
                   }}
                 >
-                  Try Again
+                  Re-examine Evidence
                 </Button>
                 
                 <Button
+                  className="bg-amber-600 hover:bg-amber-700 text-white"
                   onClick={handleReset}
                 >
-                  New Challenge
+                  New Investigation
                 </Button>
               </div>
             </div>
             
-            <div className="text-center text-muted-foreground text-sm">
-              <p>Keep practicing to improve your typing speed and accuracy!</p>
+            <div className="text-center text-[#8A898C] text-sm">
+              <p className="italic">"The world is full of obvious things which nobody by any chance ever observes."</p>
+              <p className="mt-2">Keep practicing to improve your investigative typing skills!</p>
             </div>
           </div>
         )}

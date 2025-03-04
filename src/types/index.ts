@@ -20,4 +20,5 @@ export interface Challenge {
   text: string;
   difficulty: 'easy' | 'medium' | 'hard';
   estimatedTime: string;
+  level: 'beginner' | 'intermediate' | 'advanced';
 }

@@ -4,6 +4,17 @@ import { TypingStatus, LetterStatus, TypingStats, Challenge } from '@/types';
 import { calculateWPM, calculateAccuracy, formatTime } from '@/utils/textUtils';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ChevronLeft } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface TypingInterfaceProps {
   challenge: Challenge;
@@ -31,6 +42,7 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
     totalChars: 0
   });
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [showExitDialog, setShowExitDialog] = useState(false);
   
   const textContainerRef = useRef<HTMLDivElement>(null);
   const currentLetterRef = useRef<HTMLSpanElement>(null);
@@ -63,13 +75,7 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
       // Start timer on first keypress
       if (status === 'idle') {
         setStatus('active');
-        const now = Date.now();
-        setStats(prev => ({ ...prev, startTime: now }));
-        
-        // Set up timer for elapsed time
-        timerRef.current = window.setInterval(() => {
-          setElapsedTime(Date.now() - now);
-        }, 100);
+        startTimer();
       }
       
       // Handle backspace
@@ -109,11 +115,29 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      clearTimer();
     };
   }, [challenge.text, currentIndex, status]);
+  
+  // Start the timer and set the start time
+  const startTimer = () => {
+    const now = Date.now();
+    setStats(prev => ({ ...prev, startTime: now }));
+    
+    // Set up timer for elapsed time
+    clearTimer(); // Clear any existing timer
+    timerRef.current = window.setInterval(() => {
+      setElapsedTime(Date.now() - now);
+    }, 100);
+  };
+  
+  // Clear the timer
+  const clearTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
   
   // Scroll text into view as user types
   useEffect(() => {
@@ -128,9 +152,7 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
   
   // Handle challenge completion
   const completeChallenge = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+    clearTimer();
     
     const endTime = Date.now();
     
@@ -162,12 +184,17 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
       totalChars: 0
     });
     setElapsedTime(0);
-    
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-    
+    clearTimer();
     onReset();
+  };
+  
+  // Handle back button click
+  const handleBackClick = () => {
+    if (status === 'active' && currentIndex > 0) {
+      setShowExitDialog(true);
+    } else {
+      onReset();
+    }
   };
   
   // Determine status of each letter
@@ -182,9 +209,19 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
   return (
     <div className={cn("w-full flex flex-col items-center", className)}>
       <div className="flex justify-between items-center w-full mb-4">
-        <div>
-          <h2 className="text-xl font-medium">{challenge.title}</h2>
-          <p className="text-sm text-muted-foreground">{challenge.description}</p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleBackClick}
+            className="rounded-full hover:bg-amber-50 text-amber-700"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h2 className="text-xl font-medium">{challenge.title}</h2>
+            <p className="text-sm text-muted-foreground">{challenge.description}</p>
+          </div>
         </div>
         <div className="flex items-center space-x-4">
           <div className="text-right">
@@ -261,6 +298,26 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
           Press any key to begin typing
         </p>
       )}
+
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent className="border border-amber-200">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-serif">Abandon Investigation?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The evidence you've gathered will be lost. Are you sure you want to abandon this case?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-amber-600 text-amber-800 hover:bg-amber-50">No, Continue</AlertDialogCancel>
+            <AlertDialogAction 
+              className="bg-amber-600 hover:bg-amber-700 text-white" 
+              onClick={onReset}
+            >
+              Yes, Abandon Case
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

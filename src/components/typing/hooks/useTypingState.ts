@@ -20,26 +20,34 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
   const [showExitDialog, setShowExitDialog] = useState(false);
   
   const timerRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
 
   // Start the timer and set the start time
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
+    // Only start timer if it hasn't been started yet
+    if (timerRef.current !== null) return;
+    
     const now = Date.now();
+    startTimeRef.current = now;
     setStats(prev => ({ ...prev, startTime: now }));
     
     // Set up timer for elapsed time
-    clearTimer(); // Clear any existing timer
     timerRef.current = window.setInterval(() => {
-      setElapsedTime(Date.now() - now);
+      if (startTimeRef.current) {
+        setElapsedTime(Date.now() - startTimeRef.current);
+      }
     }, 100);
-  };
+    
+    console.log("Timer started at:", now);
+  }, []);
   
   // Clear the timer
-  const clearTimer = () => {
+  const clearTimer = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-  };
+  }, []);
 
   // Complete the challenge
   const completeChallenge = useCallback(() => {
@@ -58,10 +66,10 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
     
     setStats(finalStats);
     onComplete(finalStats);
-  }, [stats, onComplete]);
+  }, [stats, onComplete, clearTimer]);
 
   // Handle key press
-  const handleKeyPress = (e: KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
     // Prevent handling modifier keys and other special keys
     if (
       e.ctrlKey || 
@@ -121,7 +129,7 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
         completeChallenge();
       }
     }
-  };
+  }, [status, currentIndex, text, startTimer, completeChallenge]);
 
   return {
     status,

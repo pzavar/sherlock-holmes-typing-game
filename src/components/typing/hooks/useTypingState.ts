@@ -1,5 +1,5 @@
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { TypingStatus, TypingStats } from '@/types';
 import { calculateWPM, calculateAccuracy } from '@/utils/textUtils';
 
@@ -25,7 +25,7 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
   // Start the timer and set the start time
   const startTimer = useCallback(() => {
     // Only start timer if it hasn't been started yet
-    if (timerRef.current !== null) return;
+    if (timerRef.current !== null || startTimeRef.current !== null) return;
     
     const now = Date.now();
     startTimeRef.current = now;
@@ -130,6 +130,13 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
       }
     }
   }, [status, currentIndex, text, startTimer, completeChallenge]);
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      clearTimer();
+    };
+  }, [clearTimer]);
 
   return {
     status,

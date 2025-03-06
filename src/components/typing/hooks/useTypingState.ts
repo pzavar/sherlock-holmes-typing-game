@@ -24,8 +24,17 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
 
   // Start the timer and set the start time
   const startTimer = useCallback(() => {
+    console.log("startTimer called, current startTimeRef:", startTimeRef.current);
+    
     // Only start timer if it hasn't been started yet
-    if (timerRef.current !== null || startTimeRef.current !== null) return;
+    if (startTimeRef.current !== null) {
+      console.log("Timer already started, returning");
+      return;
+    }
+    
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+    }
     
     const now = Date.now();
     startTimeRef.current = now;
@@ -34,23 +43,27 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
     // Set up timer for elapsed time
     timerRef.current = window.setInterval(() => {
       if (startTimeRef.current) {
-        setElapsedTime(Date.now() - startTimeRef.current);
+        const elapsed = Date.now() - startTimeRef.current;
+        setElapsedTime(elapsed);
       }
     }, 100);
     
-    console.log("Timer started at:", now);
+    console.log("Timer started at:", now, "with interval ID:", timerRef.current);
   }, []);
   
   // Clear the timer
   const clearTimer = useCallback(() => {
+    console.log("clearTimer called, current timerRef:", timerRef.current);
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    startTimeRef.current = null;
   }, []);
 
   // Complete the challenge
   const completeChallenge = useCallback(() => {
+    console.log("completeChallenge called");
     clearTimer();
     
     const endTime = Date.now();
@@ -70,6 +83,8 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
 
   // Handle key press
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    console.log("Key pressed:", e.key, "status:", status, "currentIndex:", currentIndex);
+    
     // Prevent handling modifier keys and other special keys
     if (
       e.ctrlKey || 
@@ -93,6 +108,7 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
     
     // Start timer on first keypress
     if (status === 'idle') {
+      console.log("First keypress, changing status to active and starting timer");
       setStatus('active');
       startTimer();
     }
@@ -130,6 +146,26 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
       }
     }
   }, [status, currentIndex, text, startTimer, completeChallenge]);
+
+  // Reset everything when the text changes
+  useEffect(() => {
+    console.log("Text changed, resetting state");
+    setStatus('idle');
+    setCurrentIndex(0);
+    setInputHistory([]);
+    setStats({
+      wpm: 0,
+      accuracy: 100,
+      startTime: null,
+      endTime: null,
+      correctChars: 0,
+      incorrectChars: 0,
+      totalChars: 0
+    });
+    setElapsedTime(0);
+    clearTimer();
+    startTimeRef.current = null;
+  }, [text, clearTimer]);
 
   // Clean up on unmount
   useEffect(() => {

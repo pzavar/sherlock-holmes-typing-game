@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Scroll, CheckCircle, Search, BookOpen, Glasses, MapPin } from 'lucide-react';
 import HighScoreForm from '@/components/typing/HighScoreForm';
 import HighScoresList from '@/components/typing/HighScoresList';
+import GlobalLeaderboard from '@/components/typing/GlobalLeaderboard';
 
 const Index = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
@@ -67,17 +68,24 @@ const Index = () => {
       
       <Header />
       
-      <main className="flex-1 container max-w-4xl mx-auto px-4 py-8 relative z-10">
+      <main className="flex-1 container max-w-6xl mx-auto px-4 py-8 relative z-10">
         {!selectedChallenge ? (
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-md border border-amber-200">
-            <div className="mb-6 text-center">
-              <h2 className="text-3xl font-serif font-bold text-[#403E43] mb-2">The Case Files</h2>
-              <p className="text-[#8A898C] italic">Select a document to transcribe from Sherlock's archives</p>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-md border border-amber-200">
+              <div className="mb-6 text-center">
+                <h2 className="text-3xl font-serif font-bold text-[#403E43] mb-2">The Case Files</h2>
+                <p className="text-[#8A898C] italic">Select a document to transcribe from Sherlock's archives</p>
+              </div>
+              <ChallengeSelector 
+                challenges={typingChallenges} 
+                onSelect={handleChallengeSelect} 
+              />
             </div>
-            <ChallengeSelector 
-              challenges={typingChallenges} 
-              onSelect={handleChallengeSelect} 
-            />
+            
+            {/* Leaderboard Column */}
+            <div>
+              <GlobalLeaderboard />
+            </div>
           </div>
         ) : !completedStats ? (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-md border border-amber-200">

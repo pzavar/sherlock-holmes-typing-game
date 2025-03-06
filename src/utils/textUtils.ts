@@ -1,5 +1,5 @@
 
-import { Challenge } from "../types";
+import { Challenge, HighScore } from "../types";
 
 // Calculate WPM (Words Per Minute)
 export const calculateWPM = (
@@ -32,6 +32,33 @@ export const formatTime = (ms: number): string => {
   const remainingSeconds = seconds % 60;
   
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
+
+// Local storage key for high scores
+export const HIGH_SCORES_STORAGE_KEY = 'sherlockTypingHighScores';
+
+// Save high score
+export const saveHighScore = (score: HighScore): void => {
+  const existingScores = getHighScores();
+  const newScores = [...existingScores, score];
+  
+  // Sort by WPM (descending)
+  newScores.sort((a, b) => b.wpm - a.wpm);
+  
+  // Save to local storage
+  localStorage.setItem(HIGH_SCORES_STORAGE_KEY, JSON.stringify(newScores));
+};
+
+// Get high scores
+export const getHighScores = (): HighScore[] => {
+  const scores = localStorage.getItem(HIGH_SCORES_STORAGE_KEY);
+  return scores ? JSON.parse(scores) : [];
+};
+
+// Get high scores for a specific challenge
+export const getChallengeHighScores = (challengeId: string): HighScore[] => {
+  const allScores = getHighScores();
+  return allScores.filter(score => score.challengeId === challengeId);
 };
 
 // Organized typing challenges by difficulty level
@@ -175,5 +202,43 @@ export const typingChallenges: Challenge[] = [
     difficulty: "hard",
     estimatedTime: "3 min",
     level: "advanced"
+  },
+  
+  // CHALLENGE LEVEL
+  {
+    id: "challenge-1",
+    title: "The Adventure of the Copper Beeches",
+    description: "Can you type this classic Sherlock Holmes passage at top speed?",
+    text: "To the man who loves art for its own sake, it is frequently in its least important and lowliest manifestations that the keenest pleasure is to be derived. It is pleasant to me to observe that so many of you have dipped your hands in the lucky bag of my collection.",
+    difficulty: "challenge",
+    estimatedTime: "30 sec",
+    level: "challenge"
+  },
+  {
+    id: "challenge-2",
+    title: "The Sign of Four",
+    description: "Test your typing abilities with this challenging passage",
+    text: "Sherlock Holmes took his bottle from the corner of the mantelpiece and his hypodermic syringe from its neat morocco case. With his long, white, nervous fingers he adjusted the delicate needle, and rolled back his left shirt-cuff. For some little time his eyes rested thoughtfully upon the sinewy forearm and wrist all dotted and scarred with innumerable puncture-marks.",
+    difficulty: "challenge",
+    estimatedTime: "45 sec",
+    level: "challenge"
+  },
+  {
+    id: "challenge-3",
+    title: "The Musgrave Ritual",
+    description: "Race against the clock with this intricate text",
+    text: "An anomaly which often struck me in the character of my friend Sherlock Holmes was that, although in his methods of thought he was the neatest and most methodical of mankind, and although also he affected a certain quiet primness of dress, he was none the less in his personal habits one of the most untidy men that ever drove a fellow-lodger to distraction.",
+    difficulty: "challenge",
+    estimatedTime: "40 sec",
+    level: "challenge"
+  },
+  {
+    id: "challenge-4",
+    title: "The Reigate Puzzle",
+    description: "Master this text to unlock your full typing potential",
+    text: "It was some time before the health of my friend Mr. Sherlock Holmes recovered from the strain caused by his immense exertions in the spring of '87. The whole question of the Netherland-Sumatra Company and of the colossal schemes of Baron Maupertuis are too recent in the minds of the public, and are too intimately concerned with politics and finance to be fitting subjects for this series of sketches.",
+    difficulty: "challenge",
+    estimatedTime: "50 sec",
+    level: "challenge"
   }
 ];

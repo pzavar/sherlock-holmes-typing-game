@@ -1,29 +1,52 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import ChallengeSelector from '@/components/ChallengeSelector';
 import TypingInterface from '@/components/TypingInterface';
-import { typingChallenges } from '@/utils/textUtils';
-import { Challenge, TypingStats } from '@/types';
+import { typingChallenges, getChallengeHighScores } from '@/utils/textUtils';
+import { Challenge, TypingStats, HighScore } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Scroll, CheckCircle, Search, BookOpen, Glasses, MapPin } from 'lucide-react';
+import HighScoreForm from '@/components/typing/HighScoreForm';
+import HighScoresList from '@/components/typing/HighScoresList';
 
 const Index = () => {
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [completedStats, setCompletedStats] = useState<TypingStats | null>(null);
+  const [playerName, setPlayerName] = useState<string | null>(null);
+  const [highScores, setHighScores] = useState<HighScore[]>([]);
   
   const handleChallengeSelect = (challenge: Challenge) => {
     setSelectedChallenge(challenge);
     setCompletedStats(null);
+    setPlayerName(null);
+    
+    // Load high scores for challenge mode
+    if (challenge.level === 'challenge') {
+      const scores = getChallengeHighScores(challenge.id);
+      setHighScores(scores);
+    }
   };
   
   const handleChallengeComplete = (stats: TypingStats) => {
     setCompletedStats(stats);
   };
   
+  const handleSaveScore = (name: string) => {
+    setPlayerName(name);
+    
+    // Refresh high scores
+    if (selectedChallenge && selectedChallenge.level === 'challenge') {
+      const scores = getChallengeHighScores(selectedChallenge.id);
+      setHighScores(scores);
+    }
+  };
+  
   const handleReset = () => {
     setSelectedChallenge(null);
     setCompletedStats(null);
+    setPlayerName(null);
+    setHighScores([]);
   };
   
   return (
@@ -71,7 +94,7 @@ const Index = () => {
               <div className="flex items-center justify-center mb-6">
                 <CheckCircle className="h-10 w-10 text-amber-600 mr-3" />
                 <h2 className="text-2xl font-serif font-bold text-[#403E43]">
-                  Case Closed!
+                  {selectedChallenge.level === 'challenge' ? 'Challenge Complete!' : 'Case Closed!'}
                 </h2>
               </div>
               
@@ -97,6 +120,14 @@ const Index = () => {
                 </div>
               </div>
               
+              {selectedChallenge.level === 'challenge' && !playerName && (
+                <HighScoreForm 
+                  stats={completedStats}
+                  challengeId={selectedChallenge.id}
+                  onSave={handleSaveScore}
+                />
+              )}
+              
               <div className="flex justify-center space-x-4">
                 <Button
                   variant="outline"
@@ -116,6 +147,12 @@ const Index = () => {
                 </Button>
               </div>
             </div>
+            
+            {selectedChallenge.level === 'challenge' && highScores.length > 0 && (
+              <div className="w-full max-w-xl mb-8 bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md border border-purple-200">
+                <HighScoresList scores={highScores} title="Challenge Leaderboard" />
+              </div>
+            )}
             
             <div className="text-center text-[#8A898C] text-sm">
               <p className="italic">"The world is full of obvious things which nobody by any chance ever observes."</p>

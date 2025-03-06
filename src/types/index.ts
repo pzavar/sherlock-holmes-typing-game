@@ -11,6 +11,7 @@ export interface TypingStats {
   correctChars: number;
   incorrectChars: number;
   totalChars: number;
+  playerName?: string;
 }
 
 export interface Challenge {
@@ -18,7 +19,16 @@ export interface Challenge {
   title: string;
   description: string;
   text: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: 'easy' | 'medium' | 'hard' | 'challenge';
   estimatedTime: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
+  level: 'beginner' | 'intermediate' | 'advanced' | 'challenge';
+}
+
+export interface HighScore {
+  id: string;
+  playerName: string;
+  wpm: number;
+  accuracy: number;
+  date: number;
+  challengeId: string;
 }

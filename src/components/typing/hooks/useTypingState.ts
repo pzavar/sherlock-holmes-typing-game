@@ -19,55 +19,49 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showExitDialog, setShowExitDialog] = useState(false);
   
-  const timerRef = useRef<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
-  // Start the timer and set the start time
+  // Start the timer
   const startTimer = useCallback(() => {
-    console.log("startTimer called, current startTimeRef:", startTimeRef.current);
-    
-    // Only start timer if it hasn't been started yet
+    // Only start timer if not already started
     if (startTimeRef.current !== null) {
-      console.log("Timer already started, returning");
       return;
     }
     
-    // Clear any existing timer
+    // Stop any existing timer
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
-      timerRef.current = null;
     }
     
+    // Record the start time
     const now = Date.now();
     startTimeRef.current = now;
     
     // Update stats with the start time
     setStats(prev => ({ ...prev, startTime: now }));
     
-    // Set up timer for elapsed time
-    timerRef.current = window.setInterval(() => {
+    // Start a new timer interval
+    timerRef.current = setInterval(() => {
       if (startTimeRef.current) {
         const elapsed = Math.max(0, Date.now() - startTimeRef.current);
         setElapsedTime(elapsed);
       }
     }, 100);
     
-    console.log("Timer started at:", now, "with interval ID:", timerRef.current);
+    console.log("Timer started at:", now);
   }, []);
   
   // Clear the timer
   const clearTimer = useCallback(() => {
-    console.log("clearTimer called, current timerRef:", timerRef.current);
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    startTimeRef.current = null;
   }, []);
 
   // Complete the challenge
   const completeChallenge = useCallback(() => {
-    console.log("completeChallenge called");
     clearTimer();
     
     const endTime = Date.now();
@@ -87,18 +81,8 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
 
   // Handle key press
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
-    console.log("Key pressed:", e.key, "status:", status, "currentIndex:", currentIndex);
-    
-    // Prevent handling modifier keys and other special keys
-    if (
-      e.key === 'Shift' ||
-      e.key === 'Control' ||
-      e.key === 'Alt' ||
-      e.key === 'Meta' ||
-      e.key === 'CapsLock' ||
-      e.key === 'Tab' ||
-      e.key === 'Escape'
-    ) {
+    // Ignore specific keys that shouldn't trigger typing
+    if (isModifierKey(e.key)) {
       return;
     }
     
@@ -107,16 +91,15 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
       return;
     }
     
-    // Start timer on first keypress if timer hasn't started yet
-    if (status === 'idle') {
-      console.log("First keypress, changing status to active and starting timer");
-      setStatus('active');
-      startTimer();
-    }
-    
-    // After this point, ignore event if it's a modifier key combo
+    // Ignore key combinations with modifiers
     if (e.ctrlKey || e.altKey || e.metaKey) {
       return;
+    }
+    
+    // Start timer and change status on the first keypress
+    if (status === 'idle') {
+      setStatus('active');
+      startTimer();
     }
     
     // Handle backspace
@@ -153,9 +136,20 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
     }
   }, [status, currentIndex, text, startTimer, completeChallenge]);
 
+  // Helper function to check if a key is a modifier key
+  const isModifierKey = useCallback((key: string): boolean => {
+    return [
+      'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 
+      'Tab', 'Escape', 'ArrowUp', 'ArrowDown', 
+      'ArrowLeft', 'ArrowRight', 'Home', 'End',
+      'PageUp', 'PageDown', 'Insert', 'Delete',
+      'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 
+      'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
+    ].includes(key);
+  }, []);
+
   // Reset everything when the text changes
   useEffect(() => {
-    console.log("Text changed, resetting state");
     setStatus('idle');
     setCurrentIndex(0);
     setInputHistory([]);

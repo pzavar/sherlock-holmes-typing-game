@@ -90,6 +90,7 @@ const TypingInterface: React.FC<TypingInterfaceProps> = ({
         elapsedTime={elapsedTime}
         onBackClick={handleBackClick}
         onResetClick={resetChallenge}
+        status={status}
       />
       
       <div 

@@ -10,6 +10,7 @@ interface TypingHeaderProps {
   elapsedTime: number;
   onBackClick: () => void;
   onResetClick: () => void;
+  status: 'idle' | 'active' | 'complete';
 }
 
 const TypingHeader: React.FC<TypingHeaderProps> = ({
@@ -17,7 +18,8 @@ const TypingHeader: React.FC<TypingHeaderProps> = ({
   description,
   elapsedTime,
   onBackClick,
-  onResetClick
+  onResetClick,
+  status
 }) => {
   return (
     <div className="flex justify-between items-center w-full mb-4">
@@ -36,12 +38,15 @@ const TypingHeader: React.FC<TypingHeaderProps> = ({
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <div className="text-right">
-          <p className="text-sm text-muted-foreground">Time</p>
-          <p className="font-mono font-medium">
-            {formatTime(elapsedTime)}
-          </p>
-        </div>
+        {/* Only show timer if complete */}
+        {status === 'complete' && (
+          <div className="text-right">
+            <p className="text-sm text-muted-foreground">Time</p>
+            <p className="font-mono font-medium">
+              {formatTime(elapsedTime)}
+            </p>
+          </div>
+        )}
         <Button 
           variant="outline" 
           size="sm" 

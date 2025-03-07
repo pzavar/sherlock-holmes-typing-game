@@ -32,18 +32,22 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
       return;
     }
     
+    // Clear any existing timer
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
+      timerRef.current = null;
     }
     
     const now = Date.now();
     startTimeRef.current = now;
+    
+    // Update stats with the start time
     setStats(prev => ({ ...prev, startTime: now }));
     
     // Set up timer for elapsed time
     timerRef.current = window.setInterval(() => {
       if (startTimeRef.current) {
-        const elapsed = Date.now() - startTimeRef.current;
+        const elapsed = Math.max(0, Date.now() - startTimeRef.current);
         setElapsedTime(elapsed);
       }
     }, 100);
@@ -87,9 +91,6 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
     
     // Prevent handling modifier keys and other special keys
     if (
-      e.ctrlKey || 
-      e.altKey || 
-      e.metaKey ||
       e.key === 'Shift' ||
       e.key === 'Control' ||
       e.key === 'Alt' ||
@@ -106,11 +107,16 @@ export const useTypingState = (text: string, onComplete: (stats: TypingStats) =>
       return;
     }
     
-    // Start timer on first keypress
+    // Start timer on first keypress if timer hasn't started yet
     if (status === 'idle') {
       console.log("First keypress, changing status to active and starting timer");
       setStatus('active');
       startTimer();
+    }
+    
+    // After this point, ignore event if it's a modifier key combo
+    if (e.ctrlKey || e.altKey || e.metaKey) {
+      return;
     }
     
     // Handle backspace

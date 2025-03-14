@@ -43,6 +43,22 @@ const ChallengeSelector: React.FC<ChallengeSelectorProps> = ({
     );
   };
   
+  // Challenge card click handler - regenerates text for challenge level
+  const handleChallengeClick = (challenge: Challenge) => {
+    // For challenge level, generate a fresh random text each time
+    if (challenge.level === 'challenge') {
+      import('@/utils/textUtils').then(({ getRandomSherlockPassage }) => {
+        const freshChallenge = {
+          ...challenge,
+          text: getRandomSherlockPassage()
+        };
+        onSelect(freshChallenge);
+      });
+    } else {
+      onSelect(challenge);
+    }
+  };
+  
   return (
     <div className={cn("w-full animate-slide-up", className)}>
       <Tabs 
@@ -76,7 +92,7 @@ const ChallengeSelector: React.FC<ChallengeSelectorProps> = ({
               <div 
                 key={challenge.id}
                 className="challenge-card cursor-pointer bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50"
-                onClick={() => onSelect(challenge)}
+                onClick={() => handleChallengeClick(challenge)}
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-serif font-bold text-lg text-[#403E43]">{challenge.title}</h3>
@@ -106,7 +122,7 @@ const ChallengeSelector: React.FC<ChallengeSelectorProps> = ({
               <div 
                 key={challenge.id}
                 className="challenge-card cursor-pointer bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50"
-                onClick={() => onSelect(challenge)}
+                onClick={() => handleChallengeClick(challenge)}
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-serif font-bold text-lg text-[#403E43]">{challenge.title}</h3>
@@ -136,7 +152,7 @@ const ChallengeSelector: React.FC<ChallengeSelectorProps> = ({
               <div 
                 key={challenge.id}
                 className="challenge-card cursor-pointer bg-white border-amber-200 hover:border-amber-400 hover:bg-amber-50"
-                onClick={() => onSelect(challenge)}
+                onClick={() => handleChallengeClick(challenge)}
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-serif font-bold text-lg text-[#403E43]">{challenge.title}</h3>
@@ -166,7 +182,7 @@ const ChallengeSelector: React.FC<ChallengeSelectorProps> = ({
               <div 
                 key={challenge.id}
                 className="challenge-card cursor-pointer bg-white border-purple-200 hover:border-purple-400 hover:bg-purple-50"
-                onClick={() => onSelect(challenge)}
+                onClick={() => handleChallengeClick(challenge)}
               >
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-serif font-bold text-lg text-[#403E43]">{challenge.title}</h3>

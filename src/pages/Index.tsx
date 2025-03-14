@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import ChallengeSelector from '@/components/ChallengeSelector';
 import TypingInterface from '@/components/TypingInterface';
-import { typingChallenges, getChallengeHighScores } from '@/utils/textUtils';
+import { typingChallenges, getChallengeHighScores, getFreshChallenges } from '@/utils/textUtils';
 import { Challenge, TypingStats, HighScore } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Scroll, CheckCircle, Search, BookOpen, Glasses, MapPin } from 'lucide-react';
@@ -12,6 +11,7 @@ import HighScoresList from '@/components/typing/HighScoresList';
 import GlobalLeaderboard from '@/components/typing/GlobalLeaderboard';
 
 const Index = () => {
+  const [challenges, setChallenges] = useState(() => getFreshChallenges());
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [completedStats, setCompletedStats] = useState<TypingStats | null>(null);
   const [playerName, setPlayerName] = useState<string | null>(null);
@@ -22,7 +22,6 @@ const Index = () => {
     setCompletedStats(null);
     setPlayerName(null);
     
-    // Load high scores for challenge mode
     if (challenge.level === 'challenge') {
       const scores = getChallengeHighScores(challenge.id);
       setHighScores(scores);
@@ -36,7 +35,6 @@ const Index = () => {
   const handleSaveScore = (name: string) => {
     setPlayerName(name);
     
-    // Refresh high scores
     if (selectedChallenge && selectedChallenge.level === 'challenge') {
       const scores = getChallengeHighScores(selectedChallenge.id);
       setHighScores(scores);
@@ -44,6 +42,7 @@ const Index = () => {
   };
   
   const handleReset = () => {
+    setChallenges(getFreshChallenges());
     setSelectedChallenge(null);
     setCompletedStats(null);
     setPlayerName(null);
@@ -52,7 +51,6 @@ const Index = () => {
   
   return (
     <div className="min-h-screen flex flex-col bg-[#F6F6F7] bg-[url('/paper-texture.png')] bg-repeat relative">
-      {/* Decorative Elements */}
       <div className="absolute top-[10%] left-[5%] opacity-10 transform -rotate-12">
         <Search className="h-32 w-32 text-amber-800" strokeWidth={1} />
       </div>
@@ -77,12 +75,11 @@ const Index = () => {
                 <p className="text-[#8A898C] italic">Select a document to transcribe from Sherlock's archives</p>
               </div>
               <ChallengeSelector 
-                challenges={typingChallenges} 
+                challenges={challenges}
                 onSelect={handleChallengeSelect} 
               />
             </div>
             
-            {/* Leaderboard now below the case files */}
             <div className="w-full">
               <GlobalLeaderboard />
             </div>

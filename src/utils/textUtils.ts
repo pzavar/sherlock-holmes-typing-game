@@ -1,4 +1,3 @@
-
 import { Challenge, HighScore } from "../types";
 
 // Calculate WPM (Words Per Minute)
@@ -59,6 +58,46 @@ export const getHighScores = (): HighScore[] => {
 export const getChallengeHighScores = (challengeId: string): HighScore[] => {
   const allScores = getHighScores();
   return allScores.filter(score => score.challengeId === challengeId);
+};
+
+// Sherlock Holmes passages for random challenge generation
+const sherlockPassages = [
+  "To Sherlock Holmes she is always the woman. I have seldom heard him mention her under any other name. In his eyes she eclipses and predominates the whole of her sex.",
+  "My name is Sherlock Holmes. It is my business to know what other people don't know.",
+  "The world is full of obvious things which nobody by any chance ever observes.",
+  "You know my method. It is founded upon the observation of trifles.",
+  "When you have eliminated the impossible, whatever remains, however improbable, must be the truth.",
+  "I never make exceptions. An exception disproves the rule.",
+  "It is a capital mistake to theorize before one has data. Insensibly one begins to twist facts to suit theories, instead of theories to suit facts.",
+  "There is nothing more deceptive than an obvious fact.",
+  "I cannot agree with those who rank modesty among the virtues. To the logician all things should be seen exactly as they are, and to underestimate one's self is as much a departure from truth as to exaggerate one's own powers.",
+  "Education never ends, Watson. It is a series of lessons with the greatest for the last.",
+  "Mediocrity knows nothing higher than itself, but talent instantly recognizes genius.",
+  "There is nothing more stimulating than a case where everything goes against you.",
+  "I am not the law, but I represent justice so far as my feeble powers go.",
+  "Violence does, in truth, recoil upon the violent, and the schemer falls into the pit which he digs for another.",
+  "It has long been an axiom of mine that the little things are infinitely the most important.",
+  "Data! Data! Data! I can't make bricks without clay.",
+  "The game is afoot.",
+  "You see, but you do not observe. The distinction is clear.",
+  "It is my belief, Watson, founded upon my experience, that the lowest and vilest alleys in London do not present a more dreadful record of sin than does the smiling and beautiful countryside.",
+  "Crime is common. Logic is rare. Therefore it is upon the logic rather than upon the crime that you should dwell."
+];
+
+// Generate a random passage for challenges
+export const getRandomSherlockPassage = (minLength: number = 100, maxLength: number = 300): string => {
+  // Filter passages by desired length
+  const eligiblePassages = sherlockPassages.filter(
+    p => p.length >= minLength && p.length <= maxLength
+  );
+  
+  // If no passages meet criteria, return a default one
+  if (eligiblePassages.length === 0) {
+    return sherlockPassages[0];
+  }
+  
+  // Return a random passage from the eligible ones
+  return eligiblePassages[Math.floor(Math.random() * eligiblePassages.length)];
 };
 
 // Organized typing challenges by difficulty level
@@ -204,41 +243,55 @@ export const typingChallenges: Challenge[] = [
     level: "advanced"
   },
   
-  // CHALLENGE LEVEL
+  // CHALLENGE LEVEL - these will be generated randomly
   {
     id: "challenge-1",
-    title: "The Adventure of the Copper Beeches",
+    title: "The Deduction Challenge",
     description: "Can you type this classic Sherlock Holmes passage at top speed?",
-    text: "To the man who loves art for its own sake, it is frequently in its least important and lowliest manifestations that the keenest pleasure is to be derived. It is pleasant to me to observe that so many of you have dipped your hands in the lucky bag of my collection.",
+    text: getRandomSherlockPassage(),
     difficulty: "challenge",
     estimatedTime: "30 sec",
     level: "challenge"
   },
   {
     id: "challenge-2",
-    title: "The Sign of Four",
+    title: "The Elementary Test",
     description: "Test your typing abilities with this challenging passage",
-    text: "Sherlock Holmes took his bottle from the corner of the mantelpiece and his hypodermic syringe from its neat morocco case. With his long, white, nervous fingers he adjusted the delicate needle, and rolled back his left shirt-cuff. For some little time his eyes rested thoughtfully upon the sinewy forearm and wrist all dotted and scarred with innumerable puncture-marks.",
+    text: getRandomSherlockPassage(),
     difficulty: "challenge",
     estimatedTime: "45 sec",
     level: "challenge"
   },
   {
     id: "challenge-3",
-    title: "The Musgrave Ritual",
+    title: "The Baker Street Sprint",
     description: "Race against the clock with this intricate text",
-    text: "An anomaly which often struck me in the character of my friend Sherlock Holmes was that, although in his methods of thought he was the neatest and most methodical of mankind, and although also he affected a certain quiet primness of dress, he was none the less in his personal habits one of the most untidy men that ever drove a fellow-lodger to distraction.",
+    text: getRandomSherlockPassage(),
     difficulty: "challenge",
     estimatedTime: "40 sec",
     level: "challenge"
   },
   {
     id: "challenge-4",
-    title: "The Reigate Puzzle",
+    title: "The Final Problem",
     description: "Master this text to unlock your full typing potential",
-    text: "It was some time before the health of my friend Mr. Sherlock Holmes recovered from the strain caused by his immense exertions in the spring of '87. The whole question of the Netherland-Sumatra Company and of the colossal schemes of Baron Maupertuis are too recent in the minds of the public, and are too intimately concerned with politics and finance to be fitting subjects for this series of sketches.",
+    text: getRandomSherlockPassage(),
     difficulty: "challenge",
     estimatedTime: "50 sec",
     level: "challenge"
   }
 ];
+
+// Function to get challenges with fresh random text for the challenge level
+export const getFreshChallenges = (): Challenge[] => {
+  return typingChallenges.map(challenge => {
+    // Only regenerate text for challenge level
+    if (challenge.level === 'challenge') {
+      return {
+        ...challenge,
+        text: getRandomSherlockPassage()
+      };
+    }
+    return challenge;
+  });
+};

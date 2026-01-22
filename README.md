@@ -3,8 +3,6 @@
 
 A TypeScript React typing game with a Sherlock Holmes theme where players can improve their typing skills by transcribing passages from the famous detective's case files.
 
-![Sherlock Typing Game](public/og-image.png)
-
 ## 📖 About the Project
 
 Sherlock's Typing Chronicles is an interactive typing practice application that combines the thrill of solving mysteries with improving typing skills. Users can select from various documents from Sherlock's archives - ranging from beginner to expert difficulty levels - and test their typing speed and accuracy.

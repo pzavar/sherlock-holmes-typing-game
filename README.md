@@ -38,7 +38,7 @@ Sherlock's Typing Chronicles is an interactive typing practice application that 
 
 2. Navigate to the project directory:
    ```
-   cd sherlocks-typing-chronicles
+   cd sherlocks-typing-typing-game
    ```
 
 3. Install dependencies:
@@ -69,14 +69,6 @@ Sherlock's Typing Chronicles is an interactive typing practice application that 
 - **Accuracy**: Percentage of correct keystrokes
 - **Challenge Scoring**: A combination of speed and accuracy determines your final score
 
-## 🎯 Tips for Improving
-
-1. **Focus on accuracy first**, speed will come with practice
-2. **Keep your fingers on the home row** (ASDF and JKL;)
-3. **Look at the screen**, not your keyboard
-4. **Practice regularly** for best results
-5. **Start with beginner texts** and gradually move to more difficult ones
-
 ## 🧩 Project Structure
 
 - `src/components`: React components
@@ -92,13 +84,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgements
 
 - Sherlock Holmes stories by Sir Arthur Conan Doyle
-- All icons by Lucide React
-- UI components by shadcn/ui
-
-## 📬 Contact
-
-Project Link: [GitHub Repository](https://github.com/your-username/sherlocks-typing-chronicles)
-
 ---
 
 "The game is afoot!" - Sherlock Holmes
